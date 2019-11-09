@@ -4,8 +4,10 @@ export const Form = styled.form`
   margin-top: 30px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   input {
+    width: 100%;
     flex: 1;
     border: 1px solid #eee;
     padding: 10px 15px;
@@ -44,9 +46,13 @@ export const SubmitButton = styled.button.attrs(props => ({
     color: #fff;
   }
 
+  :hover {
+    opacity: 0.7;
+  }
+
   &[disabled] {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
   ${props =>

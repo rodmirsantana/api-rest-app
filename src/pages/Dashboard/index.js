@@ -1,24 +1,20 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { FaSpinner } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Header, List, UserName, Email, Button, Footer } from './styles';
+import Header from '../../components/Header';
+import List from '../../components/List';
+import { UserInfo, UserName, Email, Button, Footer } from './styles';
 
 export default class Dashboard extends Component {
-  static propTypes = {
-    history: PropTypes.shape().isRequired,
-  };
-
   constructor(props) {
     super(props);
 
     this.state = {
       users: [],
       page: 1,
-      loading: false,
+      totalPages: 0,
     };
   }
 
@@ -30,86 +26,90 @@ export default class Dashboard extends Component {
     }
   }
 
-  loadNextPage = async e => {
-    const { page } = this.state;
+  componentDidUpdate(_, prevState) {
+    const { users } = this.state;
 
-    e.preventDefault();
-
-    this.setState({ loading: true, page: page + 1 });
-
-    if (page > 2) {
-      return;
+    if (prevState.users !== users) {
+      localStorage.setItem('users', JSON.stringify(users));
     }
+  }
 
-    this.loadUsers();
+  loadNextPage = () => {
+    const { page, totalPages } = this.state;
 
-    this.setState({
-      loading: false,
-    });
+    if (page === totalPages) return;
+
+    const pageNumber = page + 1;
+
+    this.loadUsers(pageNumber);
   };
 
-  loadPreviousPage = async e => {
+  loadPreviousPage = () => {
     const { page } = this.state;
 
-    console.log(page);
+    if (page === 1) return;
 
-    e.preventDefault();
+    const pageNumber = page - 1;
 
-    if (page === 1) {
-      return;
-    }
-
-    this.setState({ loading: true, page: page - 1 });
-
-    this.loadUsers();
-
-    this.setState({
-      loading: false,
-    });
+    this.loadUsers(pageNumber);
   };
 
-  loadUsers = async () => {
-    const { page } = this.state;
+  loadUsers = async (page = 1) => {
+    const response = await api.get(`/users?page=${page}`);
 
-    const response = await api.get(`/users?page=${String(page)}`);
+    const { data, total_pages: totalPages } = response.data;
 
-    const { data: users } = response.data;
+    const jsonUsers = JSON.stringify(data);
 
-    this.setState({ users });
+    localStorage.setItem('users', jsonUsers);
+
+    this.setState({ users: data, totalPages, page });
+  };
+
+  clearSession = () => {
+    localStorage.clear();
   };
 
   render() {
-    const { users, loading } = this.state;
+    const { users, page, totalPages } = this.state;
 
     return (
       <Container>
         <Header>
-          <Link to="/">Voltar a página de Login</Link>
+          <Link onClick={this.clearSession} to="/">
+            <p>Voltar a página de Login</p>
+          </Link>
         </Header>
 
         <List>
           {users.map(user => (
             <li key={user.id}>
-              <img src={user.avatar} alt={user.first_name} />
-              <UserName>
-                <p>Nome:</p>
-                <h1>
-                  {user.first_name} {user.last_name}
-                </h1>
-              </UserName>
-              <Email>
-                <p>Email:</p>
-                <p>{user.email}</p>
-              </Email>
+              <UserInfo>
+                <img src={user.avatar} alt={user.first_name} />
+                <UserName>
+                  <p>Nome:</p>
+                  <h1>
+                    {user.first_name} {user.last_name}
+                  </h1>
+                </UserName>
+                <Email>
+                  <p>Email:</p>
+                  <h1>{user.email}</h1>
+                </Email>
+              </UserInfo>
+
+              <Link to={`/user/${user.id}`}>
+                <p id="link">Ver Detalhes</p>
+              </Link>
             </li>
           ))}
         </List>
 
         <Footer>
-          <Button onClick={this.loadPreviousPage}>
+          <Button disabled={page === 1} onClick={this.loadPreviousPage}>
             <p>Página anterior</p>
           </Button>
-          <Button onClick={this.loadNextPage}>
+          <Button disabled={page === totalPages} onClick={this.loadNextPage}>
             <p>Próxima página</p>
           </Button>
         </Footer>

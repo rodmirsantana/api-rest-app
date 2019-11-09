@@ -7,15 +7,15 @@ import Container from '../../components/Container';
 import { Form, SubmitButton } from './styles';
 
 export default class Login extends Component {
-  static propTypes = {
-    history: PropTypes.shape().isRequired,
-  };
+  constructor(props) {
+    super(props);
 
-  state = {
-    loading: false,
-    email: '',
-    password: '',
-  };
+    this.state = {
+      loading: false,
+      email: '',
+      password: '',
+    };
+  }
 
   handleInputChange = e => {
     if (e.target.type === 'email') {
@@ -85,3 +85,7 @@ export default class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.shape().isRequired,
+};

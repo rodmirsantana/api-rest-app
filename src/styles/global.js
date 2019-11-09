@@ -10,9 +10,27 @@ export default createGlobalStyle`
 
   html, body, #root {
     min-height: 100%;
+    font-size: 62.5%;
+  }
+
+  @media (max-width: 1080px) {
+    html {
+      font-size: 58%;
+    }
+  }
+
+  @media (max-width: 720px) {
+    html {
+      font-size: 54%;
+    }
+
+    img {
+      height: 12rem;
+    }
   }
 
   body {
+    font-size: 1.6rem;
     background: #385898;
     -webkit-font-smoothing: antialiased !important
   }
@@ -21,6 +39,9 @@ export default createGlobalStyle`
     color: #222;
     font-size: 14px;
     font-family: Arial, Helvetica, sans-serif;
+  }
+
+  button, input, a {
     cursor: pointer;
   }
 `;

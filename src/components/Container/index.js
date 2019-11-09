@@ -25,7 +25,7 @@ const Container = styled.div`
     font-size: 16px;
 
     &:hover {
-      color: #385898;
+      opacity: 0.7;
     }
   }
 `;

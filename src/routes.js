@@ -4,6 +4,7 @@ import { isAuthenticated } from './auth';
 
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import UserDetails from './pages/UserDetails';
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -24,6 +25,7 @@ export default function Routes() {
       <Switch>
         <Route path="/" exact component={Login} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/user/:id" component={UserDetails} />
       </Switch>
     </BrowserRouter>
   );
