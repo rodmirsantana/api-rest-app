@@ -26,14 +26,6 @@ export default class Dashboard extends Component {
     }
   }
 
-  componentDidUpdate(_, prevState) {
-    const { users } = this.state;
-
-    if (prevState.users !== users) {
-      localStorage.setItem('users', JSON.stringify(users));
-    }
-  }
-
   loadNextPage = () => {
     const { page, totalPages } = this.state;
 
