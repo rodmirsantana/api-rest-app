@@ -34,20 +34,26 @@ export default class Login extends Component {
 
     const { email, password } = this.state;
 
-    const response = await api.post('/login', {
-      email,
-      password,
-    });
+    try {
+      const response = await api.post('/login', {
+        email,
+        password,
+      });
 
-    const { token } = response.data;
+      const { token } = response.data;
 
-    localStorage.setItem('token', token);
+      localStorage.setItem('token', token);
 
-    this.setState({
-      loading: false,
-    });
+      this.setState({
+        loading: false,
+      });
 
-    history.push('/dashboard');
+      history.push('/dashboard');
+    } catch (err) {
+      this.setState({
+        loading: false,
+      });
+    }
   };
 
   render() {
